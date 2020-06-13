@@ -32,6 +32,8 @@ const io=socketio(server);
 
 let kurentoClient =null;
 
+let url;
+
 getKurentoClient(kurentoClient, (error, client)=> {
     if (error!==null){
         return console.log(error)
@@ -46,7 +48,12 @@ io.on('connection', (socket)=> {
     let webRtcEndpoint;
     let queue =[];
 
-    socket.on('sdpOffer', (offer) => {
+    socket.on('sdpOffer', (offer,urlRTSP) => {
+        
+        url=urlRTSP;
+        
+        console.log(url);
+        
         kurentoClient.create('MediaPipeline', function(error, pipeline) {
             if (error){
                 return console.log(error);
@@ -81,7 +88,7 @@ io.on('connection', (socket)=> {
                             console.log(error);
                         }
             
-                        socket.emit('sdpAnswer', answer)
+                        socket.emit('sdpAnswer', answer,url)
             
                         webRtcalt.gatherCandidates((error) => {
                             if (error){
@@ -142,7 +149,7 @@ function getKurentoClient(client, callback){
 }
 
 function createMediaElems(pipeline, callback){
-    const url ="rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+    //const url ="rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
 
     pipeline.create('PlayerEndpoint', {uri : url}, function (error, player) {
         if (error) {

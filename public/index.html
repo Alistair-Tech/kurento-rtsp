@@ -3,20 +3,32 @@
     <head>
         <title>RTSP Stream</title>
         <link rel="icon" href="/img/favicon.png">
+        <style>
+                .myDiv {
+                border: 5px outset red;
+                background-color: lightblue;
+                text-align: center;
+                }   
+        </style>
     </head>
 
     <body>
-
-        <video id="output" autoplay></video>
+        <button id="add1">ADD</button>
+        <div id="div1" class="myDiv">
+        <!--<video id="output" autoplay></video><br>
+        <input id="input" type="text" placeholder="input RTSP link">
+        <button id="submit">Submit</button><br><br>
         <button id="wstart">Start</button>
-        <button id="stop">Stop</button>
-    
+        <button id="stop">Stop</button><br><br>-->
+        </div>
         
-
+        
+        
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/client.js"></script>
         <script src="/js/adapter.js"></script>
         <script src="/js/kurento-utils.min.js"></script>
+        
     </body>
 
 </html>
