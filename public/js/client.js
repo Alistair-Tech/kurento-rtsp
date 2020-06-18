@@ -103,6 +103,10 @@ socket.on('finalice', (candidate, number) => {
     // }, 2000);
     })
 
+socket.on('problem', (message)=> {
+    console.log(message);
+})
+
 // $mirror.addEventListener('click',() => {
 //     RtcPeer=kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly({
 //         remoteVideo: $video1,

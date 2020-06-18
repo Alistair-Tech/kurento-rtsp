@@ -49,9 +49,13 @@ io.on('connection', (socket)=> {
     let queue =[];
 
     socket.on('sdpOffer', (offer,url, num) => {
-        
-        
+
         console.log(url);
+
+        if (!url){
+            socket.emit('problem', "First add stream using submit and then press start")
+            return
+        }
         
         kurentoClient.create('MediaPipeline', function(error, pipeline) {
             if (error){
@@ -61,6 +65,7 @@ io.on('connection', (socket)=> {
             
             createMediaElems(pipeline, url, function(error, webRtc, player){
                 if (error){
+                    socket.emit(problem, error)
                     return console.log(error)
                 }
     
@@ -73,6 +78,7 @@ io.on('connection', (socket)=> {
     
                 connectMediaElems(webRtc, player, function(error, webRtcalt, playeralt){
                     if (error){
+                        socket.emit(problem,error)
                         pipeline.release();
                         return
                     }
