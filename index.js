@@ -21,7 +21,6 @@ const publicDirPath=path.join(__dirname,'./public');
 
 console.log(args)
 
-
 const app = express();
 
 app.use(express.static(publicDirPath))
@@ -62,7 +61,6 @@ io.on('connection', (socket)=> {
                 return console.log(error);
             }
     
-            
             createMediaElems(pipeline, url, function(error, webRtc, player){
                 if (error){
                     socket.emit(problem, error)
@@ -113,12 +111,12 @@ io.on('connection', (socket)=> {
     
                     pipe.push({pipeline: pipeline, player: playeralt, webRTC: webRtcalt});
     
-                })   
+                });  
                 
             });
                 
         });
-    })
+    });
 
     socket.on('initice', (cand) => {
         let candidate = kurento.getComplexType('IceCandidate')(cand);

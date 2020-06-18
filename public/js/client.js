@@ -1,16 +1,7 @@
 const socket=io(':8443', {secure: true});
 
-//const $video1 = document.querySelector('#output');
-//const $stopbutton = document.querySelector('#stop');
-//const $mirror = document.querySelector('#wstart');
-
-// $stopbutton.setAttribute('disabled', 'disabled')
-// $mirror.setAttribute('disabled', 'disabled')
-
-let videostream = null;
 let peerInfo = new Array();
 let RtcPeer;
-let url= new Array();
 let count=0;
 
 const $add1 =document.querySelector('#add1');
@@ -30,21 +21,13 @@ $add1.addEventListener('click',() => {
 let itemid,splitid;
 
 $div1.addEventListener('click',(event) => {
-    //console.log('click registered');
     
     itemid = event.target.id;
-    // console.log(itemid)
-    
-    //console.log(itemid);
     
     splitid=itemid.split('-');
 
     buttonType=splitid[0]
     num=splitid[1]
-
-    console.log(num)
-    
-    //console.log(splitid[0]);
     
     if(buttonType=='submit'){
         console.log('submit registered');
@@ -79,7 +62,9 @@ $div1.addEventListener('click',(event) => {
         peerInfo[num]["rtcPeer"]=RtcPeer
 
         RtcPeer.generateOffer((error,offer)=> {
-        // console.log(error)
+            if (error){
+                console.log(error)
+            }
             socket.emit('sdpOffer',offer,peerInfo[num].url,num);
         // console.log(offer)
         })
