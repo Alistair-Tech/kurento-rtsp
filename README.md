@@ -6,7 +6,7 @@ The web application has been implemented in Node JS.
 
 ## Software Dependencies
 The application requires the Kurento Media Server to be installed and deployed on device running the application. Installation Guide: [Kurento Installation Guide](https://doc-kurento.readthedocs.io/en/6.14.0/user/installation.html#).<br/> 
-The server is expected to run by default on localhost:8888 (the default in Kurento). An alternate port can also be used but it needs to specified through command line arguments (ws_uri) when running the application.
+The server is expected to run on localhost:8888 (the default in Kurento).
 
 ## Installation and Set-Up
 1. Clone the repo to your machine.
@@ -23,6 +23,7 @@ This step is important since Kurento needs an https URL to function.
     ```bash
     npm start
     ```
+6. The application will run on https://localhost:8443 by default.
 
 ## Additional Note
 This is experimental code and needs added functionality for session handling as well STUN/TURN configuration in the Kurento Media Server before it can be used in production. For the latter, Kurento documentation is easy to understand:- [STUN/TURN](https://doc-kurento.readthedocs.io/en/6.14.0/user/installation.html#stun-turn-server-install)
