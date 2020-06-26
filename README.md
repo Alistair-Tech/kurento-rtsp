@@ -5,7 +5,7 @@ The web application obtains RTSP streams through dynamic user input and displays
 The web application has been implemented in Node JS.
 
 ## Software Dependencies
-The application requires the Kurento Media Server to be installed and deployed on device running the application. Installation Guide:[Kurento Installation Guide](https://doc-kurento.readthedocs.io/en/6.14.0/user/installation.html#).<br/> 
+The application requires the Kurento Media Server to be installed and deployed on device running the application. Installation Guide: [Kurento Installation Guide](https://doc-kurento.readthedocs.io/en/6.14.0/user/installation.html#).<br/> 
 The server is expected to run by default on localhost:8888 (the default in Kurento). An alternate port can also be used but it needs to specified through command line arguments (ws_uri) when running the application.
 
 ## Installation and Set-Up
@@ -14,7 +14,7 @@ The server is expected to run by default on localhost:8888 (the default in Kuren
     ```bash
     npm install
     ```
-3. For testing purposes, you can simply generate a self-signed certificate using an openssl generated RSA key. A suitable resource for this purpose (any alternate method also works): [Sample Keygen exmaple](https://medium.com/@nitinpatel_20236/how-to-create-an-https-server-on-localhost-using-express-366435d61f28)
+3. For testing purposes, you can simply generate a self-signed certificate using an openssl generated RSA key. A suitable resource for this purpose (any alternate method also works): [Sample Keygen example.](https://medium.com/@nitinpatel_20236/how-to-create-an-https-server-on-localhost-using-express-366435d61f28)
 This step is important since Kurento needs an https URL to function.
 
 4. Name the key ```key.pem``` and name the certificate ```cert.pem``` and keep them in the project root directory.
