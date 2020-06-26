@@ -1,3 +1,5 @@
+// Importing required packages
+
 const fs = require('fs');
 const path=require('path');
 const minimist = require('minimist');
@@ -6,10 +8,11 @@ const https = require('https');
 const socketio = require('socket.io');
 const kurento = require('kurento-client');
 
-
+// Reading key and SSL certificate
 const key =fs.readFileSync('./key.pem');
 const cert = fs.readFileSync('./cert.pem');
 
+// Setting default URLs
 const args = minimist(process.argv.slice(2), {
     default: {
         as_uri: 'https://localhost:8443/',
@@ -17,6 +20,7 @@ const args = minimist(process.argv.slice(2), {
     }
 });
 
+// Setting up the express app
 const publicDirPath=path.join(__dirname,'./public');
 
 console.log(args)
@@ -33,6 +37,7 @@ let kurentoClient =null;
 
 let pipe= new Array();
 
+// Fetching the Kurento Client 
 getKurentoClient(kurentoClient, (error, client)=> {
     if (error!==null){
         return console.log(error)
@@ -41,21 +46,25 @@ getKurentoClient(kurentoClient, (error, client)=> {
     kurentoClient = client;
 })
 
+// On Socket.io conenction
 io.on('connection', (socket)=> {
     console.log("New web socket");
 
     let webRtcEndpoint;
     let queue =[];
 
+    // Receiving SDP offer from client-side
     socket.on('sdpOffer', (offer,url, num) => {
 
         console.log(url);
 
+        // Checking for empty input
         if (!url){
             socket.emit('problem', "First add stream using submit and then press start")
             return
         }
         
+        // Pipeline and Element creation, and subsequent connection
         kurentoClient.create('MediaPipeline', function(error, pipeline) {
             if (error){
                 return console.log(error);
@@ -66,7 +75,8 @@ io.on('connection', (socket)=> {
                     socket.emit(problem, error)
                     return console.log(error)
                 }
-    
+                
+                // Checking for already received ICE candidates in 'queue' Array
                 if (queue){
                     while (queue.length){
                         let cand = queue.shift();
@@ -80,12 +90,14 @@ io.on('connection', (socket)=> {
                         pipeline.release();
                         return
                     }
-    
+                    
+                    // ICE candidate reception
                     webRtcalt.on('OnIceCandidate', function(event) {
                         let candidate = kurento.getComplexType('IceCandidate')(event.candidate);
                         socket.emit('finalice', candidate, num)
                     })
 
+                    // Processing SDP offer and returning answer
                     webRtcalt.processOffer(offer, function(error, answer) {
                         if (error){
                             pipeline.release()
@@ -103,6 +115,7 @@ io.on('connection', (socket)=> {
                         
                     })
 
+                    // Starts playing stream
                     playeralt.play(function (error) {
                         if (error){
                             console.log("Error is" + "\n" + error)
@@ -118,6 +131,7 @@ io.on('connection', (socket)=> {
         });
     });
 
+    // Listens for ICE candidates sent through 'initice'
     socket.on('initice', (cand) => {
         let candidate = kurento.getComplexType('IceCandidate')(cand);
 
@@ -130,6 +144,8 @@ io.on('connection', (socket)=> {
 
     })
 })
+
+// Functions with specified purposes
 
 function getKurentoClient(client, callback){
     if (client!==null) {
@@ -147,7 +163,8 @@ function getKurentoClient(client, callback){
 }
 
 function createMediaElems(pipeline, url, callback){
-    //const url ="rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+    // sample stream
+    // const url ="rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
 
     pipeline.create('PlayerEndpoint', {uri : url}, function (error, player) {
         if (error) {
@@ -178,6 +195,7 @@ function connectMediaElems(webRtc, player, callback){
     });
 }
 
+// Listening at :8443
 server.listen(8443, () => {
     console.log('listening on 8443'); 
 });

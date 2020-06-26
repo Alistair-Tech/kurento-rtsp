@@ -1,11 +1,29 @@
 # kurento-rtsp
 
-Consumes RTSP stream through Kurento
+## Description
+The web application obtains RTSP streams through dynamic user input and displays them on the main web page using WebRTC. Multiple streams can be played at a time along with functionality for starting and stopping the streams. 
+The web application has been implemented in Node JS.
 
-Commit info 1: Basic setup of required modules and pipeline creation. Sample code for stream capture from client's webcam in client.js
+## Software Dependencies
+The application requires the Kurento Media Server to be installed and deployed on device running the application. Installation Guide: [Kurento Installation Guide](https://doc-kurento.readthedocs.io/en/6.14.0/user/installation.html#).<br/> 
+The server is expected to run on localhost:8888 (the default in Kurento).
 
-https://medium.com/@nitinpatel_20236/how-to-create-an-https-server-on-localhost-using-express-366435d61f28 
-Use this to generate keys
+## Installation and Set-Up
+1. Clone the repo to your machine.
+2. Install the npm dependencies: 
+    ```bash
+    npm install
+    ```
+3. For testing purposes, you can simply generate a self-signed certificate using an openssl generated RSA key. A suitable resource for this purpose (any alternate method also works): [Sample Keygen example.](https://medium.com/@nitinpatel_20236/how-to-create-an-https-server-on-localhost-using-express-366435d61f28)
+This step is important since Kurento needs an https URL to function.
 
+4. Name the key ```key.pem``` and name the certificate ```cert.pem``` and keep them in the project root directory.
 
-Commit info 2: Downloaded kurento-utils from kurento docs page to run on webpage
+5. Run the application with:
+    ```bash
+    npm start
+    ```
+6. The application will run on https://localhost:8443 by default.
+
+## Additional Note
+This is experimental code and needs added functionality for session handling as well STUN/TURN configuration in the Kurento Media Server before it can be used in production. For the latter, Kurento documentation is easy to understand:- [STUN/TURN](https://doc-kurento.readthedocs.io/en/6.14.0/user/installation.html#stun-turn-server-install)
