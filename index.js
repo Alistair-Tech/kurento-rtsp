@@ -21,7 +21,6 @@ const publicDirPath=path.join(__dirname,'./public');
 
 console.log(args)
 
-
 const app = express();
 
 app.use(express.static(publicDirPath))
@@ -31,6 +30,8 @@ const server = https.createServer({key: key, cert: cert }, app);
 const io=socketio(server);
 
 let kurentoClient =null;
+
+let pipe= new Array();
 
 getKurentoClient(kurentoClient, (error, client)=> {
     if (error!==null){
@@ -46,15 +47,23 @@ io.on('connection', (socket)=> {
     let webRtcEndpoint;
     let queue =[];
 
-    socket.on('sdpOffer', (offer) => {
+    socket.on('sdpOffer', (offer,url, num) => {
+
+        console.log(url);
+
+        if (!url){
+            socket.emit('problem', "First add stream using submit and then press start")
+            return
+        }
+        
         kurentoClient.create('MediaPipeline', function(error, pipeline) {
             if (error){
                 return console.log(error);
             }
     
-            
-            createMediaElems(pipeline, function(error, webRtc, player){
+            createMediaElems(pipeline, url, function(error, webRtc, player){
                 if (error){
+                    socket.emit(problem, error)
                     return console.log(error)
                 }
     
@@ -67,21 +76,24 @@ io.on('connection', (socket)=> {
     
                 connectMediaElems(webRtc, player, function(error, webRtcalt, playeralt){
                     if (error){
+                        socket.emit(problem,error)
                         pipeline.release();
+                        return
                     }
     
                     webRtcalt.on('OnIceCandidate', function(event) {
                         let candidate = kurento.getComplexType('IceCandidate')(event.candidate);
-                        socket.emit('finalice', candidate)
+                        socket.emit('finalice', candidate, num)
                     })
 
                     webRtcalt.processOffer(offer, function(error, answer) {
                         if (error){
                             pipeline.release()
                             console.log(error);
+                            return
                         }
             
-                        socket.emit('sdpAnswer', answer)
+                        socket.emit('sdpAnswer', answer, num)
             
                         webRtcalt.gatherCandidates((error) => {
                             if (error){
@@ -97,18 +109,14 @@ io.on('connection', (socket)=> {
                         }
                     })
     
-                    webRtcEndpoint=webRtcalt;
-                    pipe = pipeline;
-                    playerglobal = playeralt;
+                    pipe.push({pipeline: pipeline, player: playeralt, webRTC: webRtcalt});
     
-                })   
+                });  
                 
             });
                 
         });
-
-        
-    })
+    });
 
     socket.on('initice', (cand) => {
         let candidate = kurento.getComplexType('IceCandidate')(cand);
@@ -121,9 +129,6 @@ io.on('connection', (socket)=> {
         }
 
     })
-
-    
-
 })
 
 function getKurentoClient(client, callback){
@@ -141,8 +146,8 @@ function getKurentoClient(client, callback){
     });
 }
 
-function createMediaElems(pipeline, callback){
-    const url ="rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
+function createMediaElems(pipeline, url, callback){
+    //const url ="rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov"
 
     pipeline.create('PlayerEndpoint', {uri : url}, function (error, player) {
         if (error) {
