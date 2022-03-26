@@ -13,7 +13,7 @@
     "express": "^4.17.1",
     "kurento-client": "^6.13.0",
     "kurento-utils": "^6.13.1",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
