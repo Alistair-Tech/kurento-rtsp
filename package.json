@@ -14,7 +14,7 @@
     "kurento-client": "^6.13.0",
     "kurento-utils": "^6.13.1",
     "minimist": "^1.2.5",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
